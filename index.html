@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0cc0df">
+<meta name="description" content="Seu relógio de ponto pessoal.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<title>Diva Ponto</title>
+<style>
+:root{--blue:#0cc0df;--yellow:#fded8f;--lilac:#e5a6f4;--pink:#f7b6e3;--ink:#18345b;--muted:#71809a;--bg:#f7f9fd;--white:#fff;--line:#e5eaf3;--shadow:0 8px 28px #203b6412}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:28px}
+header{background:linear-gradient(120deg,var(--yellow),#fff 48%,#eafcff);padding:22px 18px 18px;border-bottom:1px solid var(--line)}
+.top{max-width:680px;margin:auto;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px}.logo{width:44px;height:44px;border-radius:15px;background:var(--blue);display:grid;place-items:center;color:white;font-size:25px;box-shadow:0 4px 10px #0cc0df44}.brand strong{display:block;font-size:20px;letter-spacing:.2px}.brand small{color:var(--muted)}.today{font-size:12px;color:var(--muted);text-align:right}
+main{max-width:680px;margin:18px auto;padding:0 15px}.card{background:var(--white);border:1px solid var(--line);border-radius:22px;padding:19px;margin-bottom:15px;box-shadow:var(--shadow)}.greeting{font-size:14px;color:var(--muted);margin:0 0 5px}.clock{font-size:clamp(42px,12vw,58px);font-weight:750;letter-spacing:-2px;text-align:center;margin:5px 0;color:var(--ink)}.date{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.punch{border:0;border-radius:17px;padding:15px 10px;min-height:105px;text-align:left;color:var(--ink);font:inherit;cursor:pointer;transition:transform .1s}.punch:active{transform:scale(.98)}.punch:disabled{opacity:.42;cursor:not-allowed}.punch .emoji{font-size:23px;display:block;margin-bottom:8px}.punch b{display:block;font-size:15px}.punch small{font-size:11px;opacity:.75}.entry{background:#d8f7ec}.lunch{background:var(--yellow)}.return{background:#f0d9fa}.exit{background:var(--pink)}
+.status{display:flex;align-items:center;gap:12px;background:#f5f8ff;border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:15px}.status .icon{width:40px;height:40px;background:#e3f8fc;border-radius:13px;display:grid;place-items:center;font-size:20px}.status small{display:block;color:var(--muted);font-size:11px}.status strong{font-size:17px}
+h2{font-size:17px;margin:0 0 12px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.section-head button,.secondary{border:1px solid var(--line);background:white;color:var(--ink);border-radius:10px;padding:8px 11px;font:inherit;font-size:12px;cursor:pointer}
+.record{display:grid;grid-template-columns:1fr auto;gap:4px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.record:last-child{border:0}.record span:last-child{font-weight:650}.muted{color:var(--muted)}.total{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:4px;font-size:13px}.total strong{font-size:19px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tab{flex:1;border:1px solid var(--line);background:white;border-radius:12px;padding:9px;font:inherit;color:var(--muted);cursor:pointer}.tab.active{background:var(--blue);border-color:var(--blue);color:white;font-weight:650}
+.day{border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:9px}.dayhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:650}.dayhead button{border:0;background:transparent;color:#1769c2;font-size:12px;cursor:pointer}.daytimes{font-size:12px;color:var(--muted);margin-top:7px}.empty{text-align:center;color:var(--muted);font-size:13px;padding:18px 5px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:5px 15px 20px}
+dialog{border:0;border-radius:20px;width:min(92vw,420px);padding:20px;color:var(--ink);box-shadow:0 20px 70px #0003}dialog::backdrop{background:#17243e77}label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px}input{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;font:inherit;color:var(--ink)}.actions{display:flex;gap:8px;margin-top:17px}.actions button{flex:1;padding:11px;border:0;border-radius:12px;font:inherit;cursor:pointer}.primary{background:var(--blue);color:#07314c;font-weight:700}.danger{background:#fff0f2;color:#a22}.notice{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
+@media(min-width:600px){main{margin-top:24px}.grid{gap:13px}.punch{padding:18px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand"><div class="logo">♛</div><div><strong>Diva Ponto</strong><small>Seu tempo, seu ritmo ✨</small></div></div><div class="today" id="today"></div></div></header>
+<main>
+<section class="card">
+<p class="greeting" id="greeting">Vamos registrar seu ponto?</p>
+<div class="clock" id="clock">00:00</div><div class="date" id="date"></div>
+<div class="grid">
+<button class="punch entry" data-type="entrada"><span class="emoji">🟢</span><b>Entrada</b><small>Iniciar expediente</small></button>
+<button class="punch lunch" data-type="almoco"><span class="emoji">🍽️</span><b>Almoço</b><small>Sair para almoçar</small></button>
+<button class="punch return" data-type="retorno"><span class="emoji">🟣</span><b>Volta do almoço</b><small>Retornar ao trabalho</small></button>
+<button class="punch exit" data-type="saida"><span class="emoji">🩷</span><b>Saída</b><small>Encerrar expediente</small></button>
+</div>
+<div class="status"><div class="icon">⏱️</div><div><small>Horas trabalhadas hoje</small><strong id="todayTotal">0h 00min</strong></div></div>
+</section>
+<section class="card">
+<div class="section-head"><h2>Histórico de ponto</h2><button id="export">Exportar CSV</button></div>
+<div class="tabs"><button class="tab active" data-filter="all">Todos</button><button class="tab" data-filter="week">Esta semana</button><button class="tab" data-filter="month">Este mês</button></div>
+<div id="history"></div>
+</section>
+<section class="card">
+<div class="section-head"><h2>Sobre seus registros</h2><button id="backup">Baixar backup</button></div>
+<p class="notice">Os registros ficam salvos neste aparelho, no armazenamento do navegador. Faça backups regularmente. Se limpar os dados do navegador ou trocar de aparelho, os registros podem ser perdidos. O horário é o do seu dispositivo.</p>
+<div class="actions"><button class="secondary" id="restoreBtn">Restaurar backup</button><button class="secondary" id="clearBtn">Apagar todos os registros</button></div>
+<input id="restoreFile" type="file" accept="application/json" hidden>
+</section>
+</main>
+<footer>Feito com carinho pela Diva Maquiada 💙</footer>
+<dialog id="editDialog"><h2>Editar registros</h2><p class="notice" id="editDate"></p><div id="editFields"></div><div class="actions"><button class="secondary" id="cancelEdit">Cancelar</button><button class="primary" id="saveEdit">Salvar alterações</button></div></dialog>
+<script>
+const names={entrada:"Entrada",almoco:"Almoço",retorno:"Volta do almoço",saida:"Saída"};
+const key="diva-ponto-records-v1";
+let records=load(), filter="all", editingDate=null;
+function load(){try{return JSON.parse(localStorage.getItem(key)||"{}")}catch(e){return {}}}
+function save(){localStorage.setItem(key,JSON.stringify(records))}
+function pad(n){return String(n).padStart(2,"0")}
+function dateKey(d=new Date()){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function fmtDate(k){return new Date(k+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"})}
+function fmtTime(t){return t||"—"}
+function minutes(t){if(!t)return null;let [h,m]=t.split(":").map(Number);return h*60+m}
+function duration(k){const r=records[k]||{};let a=minutes(r.entrada),b=minutes(r.almoco),c=minutes(r.retorno),d=minutes(r.saida);if(a===null)return 0;let end=d??minutes(new Date().toTimeString().slice(0,5));if(end===null)return 0;let total=end-a;if(b!==null)total-=Math.max(0,(c??(k===dateKey()?minutes(new Date().toTimeString().slice(0,5)):b))-b);return Math.max(0,total)}
+function human(min){return `${Math.floor(min/60)}h ${pad(min%60)}min`}
+function currentStatus(){const r=records[dateKey()]||{};return r.saida?"expediente encerrado":r.retorno?"trabalhando":r.almoco?"em almoço":r.entrada?"trabalhando":"sem registro"}
+function render(){const now=new Date();document.getElementById("clock").textContent=now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});document.getElementById("date").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});document.getElementById("today").textContent=now.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"});document.getElementById("greeting").textContent="Olá, Diva! Vamos registrar seu ponto?";document.getElementById("todayTotal").textContent=human(duration(dateKey()));
+ const r=records[dateKey()]||{};document.querySelectorAll(".punch").forEach(b=>{let t=b.dataset.type;let enabled=false;if(t==="entrada")enabled=!r.entrada&&!r.saida;if(t==="almoco")enabled=!!r.entrada&&!r.almoco&&!r.saida;if(t==="retorno")enabled=!!r.almoco&&!r.retorno&&!r.saida;if(t==="saida")enabled=!!r.entrada&&!r.saida; b.disabled=!enabled});
+ const list=document.getElementById("history");let keys=Object.keys(records).sort().reverse();if(filter==="month")keys=keys.filter(k=>k.slice(0,7)===dateKey().slice(0,7));if(filter==="week"){let n=new Date();let day=(n.getDay()+6)%7;let monday=new Date(n.getFullYear(),n.getMonth(),n.getDate()-day);let start=dateKey(monday);keys=keys.filter(k=>k>=start&&k<=dateKey(n))}
+ if(!keys.length){list.innerHTML='<div class="empty">Seus registros aparecerão aqui depois da primeira marcação.</div>';return}
+ list.innerHTML=keys.map(k=>{let x=records[k]||{};return `<div class="day"><div class="dayhead"><span>${fmtDate(k)}</span><button data-edit="${k}">Editar</button></div><div class="daytimes">${["entrada","almoco","retorno","saida"].map(t=>`${names[t]}: <b>${fmtTime(x[t])}</b>`).join("　·　")}</div><div class="total"><span class="muted">Total trabalhado</span><strong>${x.saida?human(duration(k)):k===dateKey()?human(duration(k))+"*":"—"}</strong></div></div>`}).join("");
+ list.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>openEdit(b.dataset.edit)));
+}
+function punch(t){let k=dateKey();records[k]=records[k]||{};if(records[k][t])return;records[k][t]=new Date().toTimeString().slice(0,5);save();render();alert(`${names[t]} registrada às ${records[k][t]}.`)}
+document.querySelectorAll(".punch").forEach(b=>b.addEventListener("click",()=>punch(b.dataset.type)));
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{filter=b.dataset.filter;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render()}));
+function openEdit(k){editingDate=k;let r=records[k]||{};document.getElementById("editDate").textContent=fmtDate(k);document.getElementById("editFields").innerHTML=["entrada","almoco","retorno","saida"].map(t=>`<label>${names[t]}</label><input type="time" data-field="${t}" value="${r[t]||""}">`).join("");document.getElementById("editDialog").showModal()}
+document.getElementById("cancelEdit").onclick=()=>document.getElementById("editDialog").close();
+document.getElementById("saveEdit").onclick=()=>{let r={};document.querySelectorAll("#editFields input").forEach(i=>{if(i.value)r[i.dataset.field]=i.value});if(Object.keys(r).length)records[editingDate]=r;else delete records[editingDate];save();document.getElementById("editDialog").close();render()};
+function download(name,data,type){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+document.getElementById("export").onclick=()=>{let rows=[["Data","Entrada","Almoço","Volta do almoço","Saída","Total trabalhado"]];Object.keys(records).sort().forEach(k=>{let r=records[k];rows.push([k,r.entrada||"",r.almoco||"",r.retorno||"",r.saida||"",r.saida?human(duration(k)):""]) });let csv=rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(";")).join("\n");download("diva-ponto.csv","\ufeff"+csv,"text/csv;charset=utf-8")};
+document.getElementById("backup").onclick=()=>download("diva-ponto-backup.json",JSON.stringify(records,null,2),"application/json");
+document.getElementById("restoreBtn").onclick=()=>document.getElementById("restoreFile").click();
+document.getElementById("restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let data=JSON.parse(await f.text());if(!data||typeof data!=="object"||Array.isArray(data))throw Error();records=data;save();render();alert("Backup restaurado com sucesso.")}catch(err){alert("Não foi possível ler esse backup.")}e.target.value=""};
+document.getElementById("clearBtn").onclick=()=>{if(confirm("Tem certeza que deseja apagar todos os registros deste aparelho? Faça um backup antes, se necessário.")){records={};save();render()}};
+if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}))}
+render();setInterval(render,15000);
+</script>
+</body></html>
